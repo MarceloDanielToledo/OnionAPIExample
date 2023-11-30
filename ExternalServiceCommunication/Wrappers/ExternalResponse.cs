@@ -31,7 +31,7 @@ namespace ExternalServiceCommunication.Wrappers
 
         public static ExternalResponse<T> ErrorResponse(HttpResponseMessage httpData, string message)
         {
-            return new ExternalResponse<T>(false,message, (int)httpData.StatusCode);
+            return new ExternalResponse<T>(false, message, (int)httpData.StatusCode);
         }
         public static ExternalResponse<T> Timeout(TaskCanceledException ex)
         {

@@ -26,9 +26,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementos de la solución",
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{BD710D4A-8266-45B6-AB9F-1846DE060513}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{BD710D4A-8266-45B6-AB9F-1846DE060513}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalServiceCommunication", "ExternalServiceCommunication\ExternalServiceCommunication.csproj", "{D25D1274-44D5-4F0D-A2C0-07D922353002}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExternalServiceCommunication", "ExternalServiceCommunication\ExternalServiceCommunication.csproj", "{D25D1274-44D5-4F0D-A2C0-07D922353002}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A8F4F236-3B34-44DA-A510-4E7C87025DAA}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -10,7 +10,12 @@ namespace ExternalServiceCommunication
     {
         public static void AddExternalServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<INameService, NameService>();
+            services.Configure<ClientValuesConstantsConfig>(configuration.GetSection("ExternalService:ClientValuesConstants"));
+            services.Configure<ClientCredentialsConstantsConfig>(configuration.GetSection("ExternalService:Credentials"));
+
+
+
+            services.AddTransient<IPaymentService, PaymentService>();
             services.AddHttpClient($"{HttpClientNames.GetClientName()}", client =>
             {
                 client.BaseAddress = new Uri(configuration.GetSection("ExternalService:URL").Value);
