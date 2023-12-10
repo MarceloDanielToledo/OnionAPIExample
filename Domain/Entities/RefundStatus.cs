@@ -3,8 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
 {
-    public class RefundStatus : BaseEntity
+    public class RefundStatus
     {
+        [Key]
+        public int Id { get; set; }
         [Required]
         [StringLength(100)]
         public string Status { get; set; }

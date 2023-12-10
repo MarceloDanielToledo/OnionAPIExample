@@ -1,4 +1,4 @@
-﻿using Application.Constants;
+﻿using Application.Constants.Messages;
 using FluentValidation.Results;
 
 namespace Application.Exceptions

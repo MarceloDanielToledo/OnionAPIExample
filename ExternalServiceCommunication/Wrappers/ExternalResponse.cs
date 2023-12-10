@@ -33,10 +33,6 @@ namespace ExternalServiceCommunication.Wrappers
         {
             return new ExternalResponse<T>(false, message, (int)httpData.StatusCode);
         }
-        public static ExternalResponse<T> Timeout(TaskCanceledException ex)
-        {
-            return new ExternalResponse<T>(false, ExternalResultMessages.Timeout(), (int)HttpStatusCode.RequestTimeout);
-        }
         public static ExternalResponse<T> ExceptionError(Exception ex)
         {
             return new ExternalResponse<T>(false, ex.Message, (int)HttpStatusCode.InternalServerError);

@@ -17,6 +17,9 @@ namespace Domain.Entities
 
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Amount { get; set; }
+        [Required]
+        [StringLength(100)]
+        public string Details { get; set; }
 
     }
 }
