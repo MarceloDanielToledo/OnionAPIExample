@@ -4,11 +4,13 @@ using EntityGuardian.Extensions;
 using Hangfire;
 using Hangfire.Dashboard;
 using Persistence;
+using Application;
 using Serilog;
 using Shared;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using ExternalServiceCommunication;
 
 namespace API
 {
@@ -46,9 +48,9 @@ namespace API
             {
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
             });
-            //builder.Services.AddApplicationServices();
+            builder.Services.AddApplicationServices();
             builder.Services.AddPersistenceService(builder.Configuration);
-            //builder.Services.AddPaywayServices(builder.Configuration);
+            builder.Services.AddExternalServices(builder.Configuration);
             builder.Services.AddSharedServices();
             builder.Services.ConfigureHangfire(builder.Configuration);
             builder.Services.AddHangfireServer();

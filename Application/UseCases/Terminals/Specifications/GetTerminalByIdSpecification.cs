@@ -1,7 +1,7 @@
 ﻿using Ardalis.Specification;
 using Domain.Entities;
 
-namespace Application.Specifications.Terminals
+namespace Application.UseCases.Terminals.Specifications
 {
     public class GetTerminalByIdSpecification : Specification<Terminal>
     {

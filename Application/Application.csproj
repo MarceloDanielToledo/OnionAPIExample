@@ -7,11 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Payments\Commands\Cancel\" />
-    <Folder Include="Features\Refunds\Commands\" />
-    <Folder Include="Mappings\" />
-    <Folder Include="Specifications\Payments\" />
-    <Folder Include="Specifications\Refunds\" />
+    <Folder Include="UseCases\Payments\Mappings\" />
+    <Folder Include="UseCases\Refunds\Features\Commands\" />
+    <Folder Include="UseCases\Refunds\Features\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -14,14 +14,11 @@ namespace Persistence
     {
         public static void AddPersistenceService(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
-            configuration.GetConnectionString("DefaultConnection"),
-                b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+            services.AddDbContext<ApplicationDbContext>((serviceProvider, options) =>
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
+                b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName))
+                .AddInterceptors(serviceProvider.GetRequiredService<EntityGuardianInterceptor>()));
             services.AddTransient(typeof(IRepositoryAsync<>), typeof(MyRepositoryAsync<>));
-            services.AddDbContext<ApplicationDbContext>(
-    (serviceProvider, options) =>
-        options.AddInterceptors(
-            serviceProvider.GetRequiredService<EntityGuardianInterceptor>()));
             services.AddEntityGuardian(
                configuration.GetConnectionString("DefaultConnection"),
                 option =>

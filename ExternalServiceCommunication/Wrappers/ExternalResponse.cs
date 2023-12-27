@@ -10,6 +10,7 @@ namespace ExternalServiceCommunication.Wrappers
         public string Message { get; set; }
         public T Data { get; set; }
 
+        public ExternalResponse() { }
         public ExternalResponse(bool success, T data, HttpResponseMessage httpData)
         {
             Success = success;

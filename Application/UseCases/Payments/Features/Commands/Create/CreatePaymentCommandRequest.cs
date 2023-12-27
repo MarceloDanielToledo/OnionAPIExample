@@ -1,4 +1,4 @@
-﻿namespace Application.Features.Payments.Commands.Create
+﻿namespace Application.UseCases.Payments.Features.Commands.Create
 {
     public class CreatePaymentCommandRequest
     {

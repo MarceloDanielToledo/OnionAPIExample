@@ -14,7 +14,10 @@ namespace ExternalServiceCommunication.Exceptions
         public ExternalServiceException(int statuscode, string error) : base()
         {
             StatusCode = statuscode;
-            Errors.Add(error);
+            Errors = new List<string>
+            {
+                error
+            };
         }
         public ExternalServiceException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 
