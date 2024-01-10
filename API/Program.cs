@@ -1,4 +1,4 @@
 using API;
 
-var app = Startup.Inicializar(args);
+var app = Startup.Initialize(args);
 app.Start();

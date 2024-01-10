@@ -1,9 +1,8 @@
-﻿using Domain.Common;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
 {
-    public class PaymentStatus 
+    public class PaymentStatus
     {
         [Key]
         public int Id { get; set; }

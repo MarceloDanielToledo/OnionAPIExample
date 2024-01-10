@@ -1,9 +1,9 @@
 ﻿using ExternalServiceCommunication.Models.Name;
 using ExternalServiceCommunication.Wrappers;
 
-namespace Application.Interfaces
+namespace ExternalServiceCommunication.Services.Interfaces
 {
-    public interface IPaymentService
+    public interface IPaymentsService
     {
         Task<ExternalResponse<PaymentResponse>> Create(string terminalId, decimal amount);
         Task<ExternalResponse<PaymentResponse>> Status(string paymentId);

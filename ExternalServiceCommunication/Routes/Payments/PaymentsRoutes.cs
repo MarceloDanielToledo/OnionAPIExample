@@ -1,6 +1,6 @@
 ﻿namespace ExternalServiceCommunication.Routes.Name
 {
-    public static class NameRoutes
+    public static class PaymentsRoutes
     {
         private readonly static string GetName = "?name[]=";
 

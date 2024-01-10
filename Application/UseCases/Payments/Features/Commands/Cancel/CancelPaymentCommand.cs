@@ -6,6 +6,7 @@ using Application.UseCases.Payments.Specifications;
 using Application.Wrappers;
 using Domain.Entities;
 using ExternalServiceCommunication.Exceptions;
+using ExternalServiceCommunication.Services.Interfaces;
 using MediatR;
 
 namespace Application.UseCases.Payments.Features.Commands.Cancel
@@ -18,9 +19,9 @@ namespace Application.UseCases.Payments.Features.Commands.Cancel
     public class CancelPaymentCommandHandler : IRequestHandler<CancelPaymentCommand, Response<Payment>>
     {
         private readonly IRepositoryAsync<Payment> _paymentRepository;
-        private readonly IPaymentService _paymentService;
+        private readonly IPaymentsService _paymentService;
 
-        public CancelPaymentCommandHandler(IRepositoryAsync<Payment> paymentRepository, IPaymentService paymentService)
+        public CancelPaymentCommandHandler(IRepositoryAsync<Payment> paymentRepository, IPaymentsService paymentService)
         {
             _paymentRepository = paymentRepository;
             _paymentService = paymentService;
@@ -40,7 +41,6 @@ namespace Application.UseCases.Payments.Features.Commands.Cancel
                 if (!externalResponse.Success)
                 {
                     throw new ExternalServiceException(externalResponse.CodeState, externalResponse.Message);
-
                 }
                 else
                 {

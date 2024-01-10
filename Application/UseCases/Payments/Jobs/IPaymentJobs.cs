@@ -2,7 +2,7 @@
 {
     public interface IPaymentJobs
     {
-        Task<string> UpdatePaymentStatus(int id, string externalId);
+        Task<string> UpdateStatus(int id, string externalId);
 
     }
 }

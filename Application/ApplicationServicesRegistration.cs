@@ -1,5 +1,6 @@
 ﻿using Application.Behaviours;
 using Application.UseCases.Payments.Jobs;
+using Application.UseCases.Refunds.Jobs;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +17,7 @@ namespace Application
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(aasm));
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddTransient<IPaymentJobs, PaymentJobs>();
+            services.AddTransient<IRefundJobs, RefundJobs>();
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         }
     }

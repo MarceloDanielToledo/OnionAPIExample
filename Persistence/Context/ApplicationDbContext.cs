@@ -39,7 +39,7 @@ namespace Persistence.Context
         }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<PaymentData> PaymentsData { get; set; }
-        public DbSet<PaymentError> PaymentsErros { get; set; }
+        public DbSet<PaymentError> PaymentsErrors { get; set; }
         public DbSet<PaymentStatus> PaymentStatuses { get; set; }
         public DbSet<Error> Errors { get; set; }
         public DbSet<Refund> Refunds { get; set; }

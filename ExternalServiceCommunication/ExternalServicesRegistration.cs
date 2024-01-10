@@ -1,6 +1,7 @@
-﻿using Application.Interfaces;
-using ExternalServiceCommunication.Configs;
+﻿using ExternalServiceCommunication.Configs;
+using ExternalServiceCommunication.HttpHandlers;
 using ExternalServiceCommunication.Services;
+using ExternalServiceCommunication.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
@@ -14,17 +15,18 @@ namespace ExternalServiceCommunication
         {
             services.Configure<ClientValuesConstantsConfig>(configuration.GetSection("ExternalService:ClientValuesConstants"));
             services.Configure<ClientCredentialsConstantsConfig>(configuration.GetSection("ExternalService:Credentials"));
-
+            services.AddTransient<HttpLoggerHandler>();
             var retryPolicy = HttpPolicyExtensions.HandleTransientHttpError()
                 .WaitAndRetryAsync(2, retryAttempt => TimeSpan.FromSeconds(2));
-
+            var externalUrl = configuration.GetSection("ExternalService:URL").Value ?? string.Empty;
             services.AddHttpClient($"{HttpClientNames.GetClientName()}", client =>
             {
-                client.BaseAddress = new Uri(configuration.GetSection("ExternalService:URL").Value);
+                client.BaseAddress = new Uri(externalUrl);
                 client.Timeout = TimeSpan.FromSeconds(15);
-            }).AddPolicyHandler(retryPolicy);
+            }).AddHttpMessageHandler<HttpLoggerHandler>().AddPolicyHandler(retryPolicy);
 
-            services.AddTransient<IPaymentService, PaymentService>();
+            services.AddTransient<IPaymentsService, PaymentsService>();
+            services.AddTransient<IRefundsService, RefundsService>();
         }
     }
 }

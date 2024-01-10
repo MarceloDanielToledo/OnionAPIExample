@@ -15,8 +15,8 @@ namespace Application.UseCases.Payments.Features.Commands.Create
             RuleFor(x => x.Request.Details)
                 .NotNull()
                 .WithMessage("The payment detail must not be empty.")
-                .MaximumLength(250)
-                .WithMessage("The payment reason must not exceed 100 characters.");
+                .MaximumLength(100)
+                .WithMessage("The payment detail must not exceed 100 characters.");
 
         }
     }

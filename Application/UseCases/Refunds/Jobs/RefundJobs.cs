@@ -1,40 +1,40 @@
 ﻿using Application.Interfaces;
 using Application.UseCases.Payments.Constants.Enums;
 using Application.UseCases.Payments.Constants.Messages;
-using Application.UseCases.Payments.Specifications;
+using Application.UseCases.Refunds.Constants.Enums;
+using Application.UseCases.Refunds.Constants.Messages;
+using Application.UseCases.Refunds.Specifications;
 using Domain.Entities;
-using ExternalServiceCommunication.Models.Name;
+using ExternalServiceCommunication.Models.Refunds;
 using ExternalServiceCommunication.Services.Interfaces;
 using Polly;
 using Polly.Extensions.Http;
-using System.ComponentModel;
 using System.Net;
 
-namespace Application.UseCases.Payments.Jobs
+namespace Application.UseCases.Refunds.Jobs
 {
-    public class PaymentJobs : IPaymentJobs
+    public class RefundJobs : IRefundJobs
     {
         private readonly AsyncPolicy<HttpResponseMessage> _retryPolicy;
-        private readonly IRepositoryAsync<Payment> _paymentRepository;
-        private readonly IRepositoryAsync<PaymentData> _paymentDataRepository;
-        private readonly IPaymentsService _paymentService;
+        private readonly IRepositoryAsync<Refund> _refundRepository;
+        private readonly IRefundsService _refundService;
 
         private HttpResponseMessage ResponseMessage { get; set; } = new HttpResponseMessage() { StatusCode = HttpStatusCode.NotAcceptable };
-        private Payment? Payment { get; set; }
+        private Refund? Refund { get; set; }
         private bool UpdatedInDB { get; set; } = false;
         private string ResultMessage { get; set; } = string.Empty;
 
-        public PaymentJobs(IRepositoryAsync<Payment> paymentRepository, IRepositoryAsync<PaymentData> paymentDataRepository, IPaymentsService paymentService)
+        public RefundJobs(IRepositoryAsync<Refund> refundRepository, IRefundsService refundService)
         {
-            _paymentRepository = paymentRepository;
-            _paymentDataRepository = paymentDataRepository;
-            _paymentService = paymentService;
+            _refundRepository = refundRepository;
+            _refundService = refundService;
             _retryPolicy = HttpPolicyExtensions.HandleTransientHttpError()
                 .OrResult(response => response.StatusCode == HttpStatusCode.NotAcceptable)
                 .WaitAndRetryAsync(10, retryAttempt => TimeSpan.FromSeconds(3));
         }
 
-        [DisplayName("Payment update inquiry: [Id: {0} | ExternalId: {1}")]
+
+
         public async Task<string> UpdateStatus(int id, string externalId)
         {
             await SendRequest(id, externalId);
@@ -43,16 +43,18 @@ namespace Application.UseCases.Payments.Jobs
                 await Cancel();
             }
             return ResultMessage;
+
         }
+
 
         private async Task<HttpResponseMessage> SendRequest(int id, string externalId)
         {
             await _retryPolicy.ExecuteAsync(async () =>
             {
-                Payment = await _paymentRepository.FirstOrDefaultAsync(new GetPaymentByIdSpecification(id));
-                if (Payment is not null && Payment.PaymentStatusId == (int)EnumPaymentStatus.Requested)
+                Refund = await _refundRepository.FirstOrDefaultAsync(new GetRefundByIdSpecification(id));
+                if (Refund is not null && Refund.RefundStatusId == (int)EnumPaymentStatus.Requested)
                 {
-                    var externalResponse = await _paymentService.Status(externalId);
+                    var externalResponse = await _refundService.Status(externalId);
                     if (externalResponse.Success && externalResponse.Data.Status != "REQUEST")
                     {
                         await Update(externalResponse.Data);
@@ -73,37 +75,47 @@ namespace Application.UseCases.Payments.Jobs
             return ResponseMessage;
         }
 
-        private async Task Update(PaymentResponse externalResponse)
+
+        private async Task Update(RefundResponse externalResponse)
         {
-            // Update the payment based on the response from the external service.
-            if (Payment is not null)
+            if (Refund is not null)
             {
-                Payment.PaymentStatusId = (int)EnumPaymentStatus.Confirmed;
-                await _paymentRepository.UpdateAsync(Payment);
-                await _paymentDataRepository.AddAsync(new PaymentData()
+                Refund.RefundStatusId = (int)EnumRefundStatus.Requested;
+                switch (externalResponse.Status)
                 {
-                    CardBrand = externalResponse.CardBrand,
-                    CardType = externalResponse.CardType,
-                    LastFourDigits = externalResponse.LastFourDigits,
-                    PaymentId = Payment.Id
-                });
+                    case "REQUEST":
+                        Refund.RefundStatusId = (int)EnumRefundStatus.Requested;
+                        break;
+                    case "CANCELLED":
+                        Refund.RefundStatusId = (int)EnumRefundStatus.Cancelled;
+                        break;
+                    case "CONFIRMED":
+                        Refund.RefundStatusId = (int)EnumRefundStatus.Confirmed;
+                        break;
+                    case "UNDONE":
+                        Refund.RefundStatusId = (int)EnumRefundStatus.Undone;
+                        break;
+                    default:
+                        break;
+                }
+                await _refundRepository.UpdateAsync(Refund);
             }
         }
         private async Task Cancel()
         {
-            if (Payment is not null)
+            if (Refund is not null)
             {
-                var externalResponse = await _paymentService.Cancel(Payment.ExternalId);
+                var externalResponse = await _refundService.Cancel(Refund.ExternalId);
                 if (externalResponse.Success)
                 {
-                    Payment.PaymentStatusId = (int)EnumPaymentStatus.Undone;
-                    await _paymentRepository.UpdateAsync(Payment);
-                    ResultMessage = PaymentsMessages.Canceled();
+                    Refund.RefundStatusId = (int)EnumRefundStatus.Undone;
+                    await _refundRepository.UpdateAsync(Refund);
+                    ResultMessage = RefundsMessages.Canceled();
 
                 }
                 else
                 {
-                    ResultMessage = PaymentsMessages.CanceledError();
+                    ResultMessage = RefundsMessages.CanceledError();
                 }
 
             }

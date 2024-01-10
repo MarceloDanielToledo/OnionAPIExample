@@ -10,6 +10,8 @@ namespace Domain.Entities
         [Required]
         [StringLength(50)]
         public string ExternalId { get; set; }
+        public int RefundStatusId { get; set; }
+        public RefundStatus RefundStatus { get; set; }
         [Required]
         [StringLength(100)]
         public string Reason { get; set; }

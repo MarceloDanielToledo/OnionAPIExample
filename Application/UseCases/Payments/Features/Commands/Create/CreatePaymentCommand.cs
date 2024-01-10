@@ -7,6 +7,7 @@ using Application.UseCases.Terminals.Specifications;
 using Application.Wrappers;
 using Domain.Entities;
 using ExternalServiceCommunication.Exceptions;
+using ExternalServiceCommunication.Services.Interfaces;
 using Hangfire;
 using MediatR;
 
@@ -26,13 +27,13 @@ namespace Application.UseCases.Payments.Features.Commands.Create
 
             private readonly IRepositoryAsync<Payment> _paymentRepository;
             private readonly IRepositoryAsync<Terminal> _terminalRepository;
-            private readonly IPaymentService _paymentService;
+            private readonly IPaymentsService _paymentService;
             private readonly IPaymentJobs _paymentJobs;
 
             public CreatePaymentCommandHandler(
-                IRepositoryAsync<Payment> paymentRepository, 
-                IRepositoryAsync<Terminal> terminalRepository, 
-                IPaymentService paymentService, 
+                IRepositoryAsync<Payment> paymentRepository,
+                IRepositoryAsync<Terminal> terminalRepository,
+                IPaymentsService paymentService,
                 IPaymentJobs paymentJobs)
             {
                 _paymentRepository = paymentRepository;
@@ -55,11 +56,11 @@ namespace Application.UseCases.Payments.Features.Commands.Create
                     {
                         Amount = command.Request.Amount,
                         Details = command.Request.Details,
-                        ExternalId = externalResponse.Data.PaymentId,
+                        ExternalId = externalResponse.Data.Id,
                         PaymentStatusId = (int)EnumPaymentStatus.Requested,
                         TerminalId = terminal.Id
                     }, cancellationToken);
-                    BackgroundJob.Enqueue(() => _paymentJobs.UpdatePaymentStatus(NewPayment.Id, NewPayment.ExternalId));
+                    BackgroundJob.Enqueue(() => _paymentJobs.UpdateStatus(NewPayment.Id, NewPayment.ExternalId));
                     return Response<Payment>.SuccessResponse(NewPayment, PaymentsMessages.RequestCreated());
 
                 }

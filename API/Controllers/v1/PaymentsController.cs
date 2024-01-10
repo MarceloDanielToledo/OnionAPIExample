@@ -2,7 +2,6 @@
 using Application.UseCases.Payments.Features.Commands.Create;
 using Application.UseCases.Payments.Features.Queries;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection.Metadata.Ecma335;
 
 namespace API.Controllers.v1
 {
